@@ -7,7 +7,7 @@ const server = express();
 
 middlewareConfig(server);
 
-server.post('/api/register', (req, res) => {
+server.post('/api/register/', (req, res) => {
     const userInfo = req.body;
     userInfo.password = bcrypt.hashSync(userInfo.password);
 
@@ -19,6 +19,26 @@ server.post('/api/register', (req, res) => {
         .catch(() => {
             res.status(500).json({ 
                 error: `Couldn't register. Please try again with a username and password.` 
+            });
+        });
+})
+
+server.post('/api/login/', (req, res) => {
+    const credentials = req.body;
+
+    helpers
+        .loginUser(credentials)
+        .then(user => {
+            if (!user ||
+                !bcrypt.compareSync(credentials.password, user[0].password)) {
+                    res.status(404).json({ error: 'You shall not pass!' });
+                } else {
+                   res.status(200).json({ message: 'Logged in!' });
+                }
+        })
+        .catch(() => {
+            res.status(500).json({ 
+                error: `Couldn't log in. Please try again with a username and password.` 
             });
         });
 })
