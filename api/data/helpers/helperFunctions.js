@@ -11,7 +11,12 @@ const loginUser = userInfo => {
     return db('users').where({ 'username': userInfo.username });
 }
 
+const getUsers = () => {
+    return db('users').select('username');
+}
+
 module.exports = {
     registerUser,
     loginUser,
+    getUsers,
 }

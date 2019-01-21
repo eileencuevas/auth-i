@@ -43,4 +43,17 @@ server.post('/api/login/', (req, res) => {
         });
 })
 
+server.get('/api/users/', (req, res) => {
+    helpers
+        .getUsers()
+        .then(users => {
+            res.status(200).json(users);
+        })
+        .catch(() => {
+            res.status(500).json({ 
+                error: `Couldn't access users. Please try again with a username and password.` 
+            });
+        });
+})
+
 server.listen(5000, () => console.log('Server running on 5000'));
