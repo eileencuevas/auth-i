@@ -6,6 +6,7 @@ const knex = require('knex');
 const knexConfig = require('../../knexfile');
 const session = require('express-session');
 const KnexSessionStore = require('connect-session-knex')(session);
+const restricted = require('../middlewares/restrictedMiddleware');
 
 const db = knex(knexConfig.development);
 
@@ -34,4 +35,5 @@ module.exports = server => {
     server.use(helmet());
     server.use(morgan('short'));
     server.use(cors());
+    server.use(restricted);
 }

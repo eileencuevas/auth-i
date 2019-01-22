@@ -61,4 +61,8 @@ server.get('/api/users/', (req, res) => {
     }
 })
 
+server.get('/api/restricted/', (req, res) => {
+    res.status(200).json({ message: `Howdy! You're logged in, so you can see this!` });
+})
+
 server.listen(5000, () => console.log('Server running on 5000'));
