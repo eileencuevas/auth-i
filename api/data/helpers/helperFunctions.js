@@ -8,11 +8,13 @@ const registerUser = userInfo => {
 }
 
 const loginUser = userInfo => {
-    return db('users').where({ 'username': userInfo.username });
+    return db('users')
+        .where({ 'username': userInfo.username })
+        .first();
 }
 
 const getUsers = () => {
-    return db('users').select('username');
+    return db('users').select('id', 'username');
 }
 
 module.exports = {

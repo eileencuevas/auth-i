@@ -30,10 +30,11 @@ server.post('/api/login/', (req, res) => {
         .loginUser(credentials)
         .then(user => {
             if (!user ||
-                !bcrypt.compareSync(credentials.password, user[0].password)) {
-                    res.status(404).json({ error: 'You shall not pass!' });
+                !bcrypt.compareSync(credentials.password, user.password)) {
+                    res.status(401).json({ error: 'You shall not pass!' });
                 } else {
-                   res.status(200).json({ message: 'Logged in!' });
+                    req.session.userId = user.id;
+                    res.status(200).json({ message: `Logged in! welcome, ${user.username}!` });
                 }
         })
         .catch(() => {
@@ -44,16 +45,20 @@ server.post('/api/login/', (req, res) => {
 })
 
 server.get('/api/users/', (req, res) => {
-    helpers
-        .getUsers()
-        .then(users => {
-            res.status(200).json(users);
-        })
-        .catch(() => {
-            res.status(500).json({ 
-                error: `Couldn't access users. Please try again with a username and password.` 
+    if (req.session && req.session.userId) {
+        helpers
+            .getUsers()
+            .then(users => {
+                res.status(200).json(users);
+            })
+            .catch(() => {
+                res.status(500).json({ 
+                    error: `Couldn't access users. Please try again with a username and password.` 
+                });
             });
-        });
+    } else {
+        res.status(401).json({ message: 'You shall not pass!' });
+    }
 })
 
 server.listen(5000, () => console.log('Server running on 5000'));
